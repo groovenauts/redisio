@@ -73,13 +73,15 @@ def configure
         only_if { current['syslogenabled'] != 'yes' && current['logfile'] && current['logfile'] != 'stdout' }
       end
       #Create the log file is syslog is not being used
-      file current['logfile'] do
-        owner current['user']
-        group current['group']
-        mode '0644'
-        backup false
-        action :touch
-        only_if { current['logfile'] && current['logfile'] != 'stdout' }
+      if current['logfile']
+        file current['logfile'] do
+          owner current['user']
+          group current['group']
+          mode '0644'
+          backup false
+          action :touch
+          only_if { current['logfile'] && current['logfile'] != 'stdout' }
+        end
       end
       #Lay down the configuration files for the current instance
       template "#{current['configdir']}/#{sentinel_name}.conf" do
